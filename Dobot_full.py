@@ -11,8 +11,8 @@ def take_pic():
         print("Failed to grab frame")
         return None, None  # Consider how you want to handle errors
     altura, anchura = frame.shape[:2]
-    print("Anchura:", anchura)
-    print("Altura:", altura)
+    print("W:", anchura)
+    print("H:", altura)
     blob = cv2.dnn.blobFromImage(frame, 1 / 255.0, (416, 416), swapRB=True, crop=False)
     return blob, frame  # Returning both the blob and the frame
 
@@ -52,14 +52,14 @@ def obj_detc(blob, frame, net, layer_names, output_layers):
 
 def marcar_y_mostrar(frame, x_cor, y_cor, w_, h_):
     """
-    Dibuja marcas en los objetos detectados y muestra la imagen resultante.
+    Draw marks on the detected objects and display the resulting image.
 
-    Parámetros:
-    - frame: La imagen original en la que se detectaron los objetos.
-    - x_cor: Lista de las coordenadas x de los objetos detectados.
-    - y_cor: Lista de las coordenadas y de los objetos detectados.
-    - w_: Lista de los anchos de los objetos detectados.
-    - h_: Lista de las alturas de los objetos detectados.
+    Parameters:
+    - frame: The original image in which the objects were detected.
+    - x_cor: List of the x coordinates of the detected objects.
+    - y_cor: List of the y coordinates of the detected objects.
+    - w_: List of the widths of the detected objects.
+    - h_: List of the heights of the detected objects.
     """
     # Dibuja un círculo en el centro de cada objeto detectado
     for r in range(len(x_cor)):
@@ -137,10 +137,13 @@ def start_process():
 
     blob, frame = take_pic()
     if blob is not None:
-        # Llama a obj_detc para obtener las coordenadas de los objetos detectados
-        x_cor, y_cor, w_, h_ = obj_detc(blob, frame, net, layer_names, output_layers)  # Desempaquetando las coordenadas directamente
+        # Call obj_detc to obtain the coordinates of the detected objects.
 
-        # Llama a marcar_y_mostrar para dibujar marcas en los objetos detectados y mostrar el resultado
+        x_cor, y_cor, w_, h_ = obj_detc(blob, frame, net, layer_names, output_layers)  # Unpacking the coordinates directly.
+
+
+        # Call mark_and_show to draw marks on the detected objects and display the result.
+
         marcar_y_mostrar(frame, x_cor, y_cor, w_, h_)
         x_list, y_list = dobot_coor(frame, x_cor, y_cor, w_, h_)
         dobot_mov(x_list, y_list, device)

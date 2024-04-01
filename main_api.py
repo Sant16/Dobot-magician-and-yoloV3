@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 import uvicorn
-from Dobot_full import start_process  # Asegúrate de que la ruta de importación es correcta
+from Dobot_full import start_process 
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
 import os
@@ -21,19 +21,20 @@ async def run_in_threadpool(func, *args, **kwargs):
     loop = asyncio.get_running_loop()
     return await loop.run_in_executor(executor, lambda: func(*args, **kwargs))
 
-# Endpoint para servir la página web
+# Endpoint to serve the web page.
 @app.get("/", response_class=HTMLResponse)
 async def get():
     with open('index.html', 'r') as file:
         content = file.read()
     return HTMLResponse(content=content)
 
-# Endpoint para iniciar la detección y el movimiento del Dobot
+# Endpoint to start detection and movement of the Dobot.
+
 @app.get("/start-detection/")
 async def start_detection():
     try:
         await run_in_threadpool(start_process)
-        return {"message": "Detección iniciada con éxito"}
+        return {"message": "Detection successfully initiated."}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

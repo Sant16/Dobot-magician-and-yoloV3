@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dobot Control</title>
+    <style>
+        body {
+            position: relative; /* Establece el contenedor principal para el posicionamiento absoluto de los hijos */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start; /* Ajustado para permitir el movimiento del título y el botón */
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Courier New', Courier, monospace;
+            background-color: aqua;
+        }
+
+        h1 {
+            position: absolute; /* Posicionamiento absoluto */
+            top: 50px; /* Ajusta esta distancia para mover el título */
+            left: 50%; /* Centra el título horizontalmente */
+            transform: translateX(-50%); /* Ajuste fino para centrar exactamente el título */
+            margin-bottom: 0; /* Remueve el margen para controlar la posición con top */
+        }
+
+        #start-detection {
+            position: absolute; /* Posicionamiento absoluto */
+            top: 150px; /* Ajusta esta distancia para mover el botón */
+            left: 50%; /* Centra el botón horizontalmente */
+            transform: translateX(-50%); /* Ajuste fino para centrar exactamente el botón */
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #resultImage {
+            max-width: 30%;
+            height: auto;
+            display: none; /* Oculto inicialmente, se muestra después de cargar */
+            position: absolute;
+            top: 250px; /* Ajusta esta distancia para mover la imagen */
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid yellow;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Fab-Lab</h1>
+<button id="start-detection">Start</button>
+<img id="resultImage">
+
+<script>
+document.getElementById('start-detection').addEventListener('click', function() {
+    fetch('/start-detection/')
+        .then(response => response.json())
+        .then(data => {
+           // alert(data.message);
+            // Usa fetch para obtener la imagen y crear un blob
+            fetch(`/static/detection.jpg?${new Date().getTime()}`)
+                .then(response => response.blob())
+                .then(blob => {
+                    const url = URL.createObjectURL(blob);
+                    document.getElementById('resultImage').src = url;
+                    document.getElementById('resultImage').style.display = 'block';
+                });
+        })
+        .catch(error => alert('Error: ' + error));
+});
+</script>
+
+
+</body>
+</html>
